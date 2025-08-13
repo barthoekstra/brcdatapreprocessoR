@@ -39,22 +39,24 @@ preprocess_raw_trektellen_data <- function(csv_path, date_str = NULL) {
     on_date <- data$date == date_Date
     data <- data[on_date, ]
 
-    if (nrow(data) == 0) stop("Date selection resulted in 0 rows")
-  }
+    if (nrow(data) == 0) {
+      stop("Date selection resulted in 0 rows")
+    }
 
-  # Add dummy start and end times
-  times <- data.frame(
-    date = rep(as.Date(date_str), 4),
-    timestamp = hms::hms(
-      hours = c(0, 0, 23, 23),
-      minutes = c(0, 0, 59, 59),
-      seconds = c(0, 0, 59, 59)
-    ),
-    telpost = c(1047, 1048, 1047, 1048),
-    speciesname = c("START", "START", "END", "END"),
-    count = 1
-  )
-  data <- dplyr::bind_rows(times[1:2, ], data, times[3:4, ])
+    # Add dummy start and end times
+    times <- data.frame(
+      date = rep(as.Date(date_str), 4),
+      timestamp = hms::hms(
+        hours = c(0, 0, 23, 23),
+        minutes = c(0, 0, 59, 59),
+        seconds = c(0, 0, 59, 59)
+      ),
+      telpost = c(1047, 1048, 1047, 1048),
+      speciesname = c("START", "START", "END", "END"),
+      count = 1
+    )
+    data <- dplyr::bind_rows(times[1:2, ], data, times[3:4, ])
+  }
 
   # Change timestamp to 00:00:00 if timestamp was missing
   timestamp_missing <- is.na(data$timestamp)
