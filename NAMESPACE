@@ -2,4 +2,6 @@
 
 export(check_trektellen_data)
 export(preprocess_raw_trektellen_data)
+export(process_day)
+export(process_today)
 export(write_data)
