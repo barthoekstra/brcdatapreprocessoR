@@ -125,6 +125,9 @@ preprocess_raw_trektellen_data <- function(csv_path, date_str = NULL) {
 #' several common data issues in the 'check' column.
 #' @export
 check_trektellen_data <- function(data) {
+  # Season parameters
+  season_params <- get_season_params(unique(lubridate::year(data$datetime)))
+
   # Check doublecounts
   dc_idx <- which(data$counttype == "D")
   nr_doublecounts <- length(dc_idx)
@@ -240,8 +243,8 @@ check_trektellen_data <- function(data) {
       if (
         row$telpost == "2. Shuamta" &&
           !row$counttype == "S" &&
-          row$datetime >= lubridate::ymd(hb_focus_start) &&
-          row$datetime <= lubridate::ymd(hb_focus_end)
+          row$datetime >= season_params["hb_focus_start"] &&
+          row$datetime <= season_params["hb_focus_end"]
       ) {
         next
       }
@@ -327,8 +330,8 @@ check_trektellen_data <- function(data) {
   non_singlecount_hb <- which(
     data$speciesname == "HB" &
       data$counttype != "S" &
-      data$datetime >= lubridate::ymd(hb_focus_start) &
-      data$datetime <= lubridate::ymd(hb_focus_end) &
+      data$datetime >= season_params["hb_focus_start"] &
+      data$datetime <= season_params["hb_focus_end"] &
       data$telpost == "2. Shuamta"
   )
 

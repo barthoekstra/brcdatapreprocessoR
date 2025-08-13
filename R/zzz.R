@@ -1,10 +1,32 @@
-# Batumi Raptor Count monitoring period
-season_start <- "2025-08-12"
-season_end <- "2025-10-21"
+#' Get correct season parameters based on a year as input
+#'
+#' @param yyyy Year (integer) in YYYY
+#'
+#' @export
+get_season_params <- function(yyyy) {
+  # Monitoring period
+  if (yyyy > 2018) {
+    season_start <- lubridate::ymd("2025-08-12")
+    season_end <- lubridate::ymd("2025-10-21")
+  } else {
+    season_start <- lubridate::ymd("2018-08-17")
+    season_end <- lubridate::ymd("2018-10-16")
+  }
+  lubridate::year(season_start) <- yyyy
+  lubridate::year(season_end) <- yyyy
 
-# Honey Buzzard focus period
-hb_focus_start <- "2025-08-21"
-hb_focus_end <- "2025-09-09"
+  # Honey Buzzard focus period
+  hb_focus_start <- lubridate::ymd("2025-08-21")
+  hb_focus_end <- lubridate::ymd("2025-09-09")
+  lubridate::year(hb_focus_start) <- yyyy
+  lubridate::year(hb_focus_end) <- yyyy
+  return(c(
+    "season_start" = season_start,
+    "season_end" = season_end,
+    "hb_focus_start" = hb_focus_start,
+    "hb_focus_end" = hb_focus_end
+  ))
+}
 
 # Time window to use when checking records
 window_minutes <- 5 # Minutes
@@ -18,10 +40,10 @@ overlapping_zones <- list(
     O = c("W3"),
     E1 = c("W3"),
     E2 = c("W3", "W2"),
-    E3 = c("W2", "W1", "O", "E1", "E2", "E3")
+    E3 = c("W3", "W2", "W1", "O", "E1", "E2")
   ),
   `2. Shuamta` = list(
-    W3 = c("W3", "W2", "W1", "O", "E1", "E2"),
+    W3 = c("W2", "W1", "O", "E1", "E2", "E3"),
     W2 = c("E3", "E2"),
     W1 = c("E3"),
     O = c("E3"),
