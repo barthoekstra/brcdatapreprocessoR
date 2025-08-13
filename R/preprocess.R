@@ -65,6 +65,9 @@ preprocess_raw_trektellen_data <- function(csv_path, date_str = NULL) {
   # Make datetime column
   data$datetime <- lubridate::ymd(data$date) + lubridate::hms(data$timestamp)
 
+  # Turn counttype NAs into ""
+  data$counttype[is.na(data$counttype)] <- ""
+
   # Remove unused columns, including the date and timestamp columns, which we can regenerate later on
   drop_cols <- c("date", "timestamp", "countid", "speciesid", "year", "yday")
   data <- data[, -which(names(data) %in% drop_cols)]
