@@ -31,8 +31,8 @@ write_data <- function(
       stop("Files already exist.")
     }
 
-    station1 <- subset(data, telpost == "1. Sakhalvasho")
-    station2 <- subset(data, telpost == "2. Shuamta")
+    station1 <- subset(data, data$telpost == "1. Sakhalvasho")
+    station2 <- subset(data, data$telpost == "2. Shuamta")
 
     writexl::write_xlsx(station1, file_out_s1)
     writexl::write_xlsx(station2, file_out_s2)

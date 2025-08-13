@@ -237,14 +237,14 @@ check_trektellen_data <- function(data) {
       if (
         row$telpost == "2. Shuamta" &&
           !row$counttype == "S" &&
-          row$datetime >= ymd(hb_focus_start) &&
-          row$datetime <= ymd(hb_focus_end)
+          row$datetime >= lubridate::ymd(hb_focus_start) &&
+          row$datetime <= lubridate::ymd(hb_focus_end)
       ) {
         next
       }
 
-      window_start <- row$datetime - dminutes(window_minutes)
-      window_end <- row$datetime + dminutes(window_minutes)
+      window_start <- row$datetime - lubridate::dminutes(window_minutes)
+      window_end <- row$datetime + lubridate::dminutes(window_minutes)
 
       in_window <- (HBs$datetime >= window_start) &
         (HBs$datetime <= window_end) &
@@ -288,8 +288,8 @@ check_trektellen_data <- function(data) {
         next
       }
 
-      window_start <- row$datetime - dminutes(window_minutes)
-      window_end <- row$datetime + dminutes(window_minutes)
+      window_start <- row$datetime - lubridate::dminutes(window_minutes)
+      window_end <- row$datetime + lubridate::dminutes(window_minutes)
 
       in_window <- (BKs$datetime >= window_start) &
         (BKs$datetime <= window_end) &
@@ -324,8 +324,8 @@ check_trektellen_data <- function(data) {
   non_singlecount_hb <- which(
     data$speciesname == "HB" &
       data$counttype != "S" &
-      data$datetime >= ymd(hb_focus_start) &
-      data$datetime <= ymd(hb_focus_end) &
+      data$datetime >= lubridate::ymd(hb_focus_start) &
+      data$datetime <= lubridate::ymd(hb_focus_end) &
       data$telpost == "2. Shuamta"
   )
 
