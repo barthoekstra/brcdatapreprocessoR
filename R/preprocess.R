@@ -114,7 +114,14 @@ preprocess_raw_trektellen_data <- function(csv_path, date_str = NULL) {
   data
 }
 
-preprocess_trektellen_data <- function(data) {
+#' Check formatted Trektellen data
+#'
+#' @param data Dataframe with BRC formatted data
+#'
+#' @returns Dataframe with checked Trektellen data. Rows are flagged for
+#' several common data issues in the 'check' column.
+#' @export
+check_trektellen_data <- function(data) {
   # Check doublecounts
   dc_idx <- which(data$counttype == "D")
   nr_doublecounts <- length(dc_idx)
