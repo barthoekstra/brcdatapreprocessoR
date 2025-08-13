@@ -1,10 +1,17 @@
 Package: brcdatapreprocessoR
-Title: What the Package Does (One Line, Title Case)
+Title: Batumi Raptor Count data preprocessor
 Version: 0.0.0.9000
 Authors@R: 
     person("Bart", "Hoekstra", , "bart.hoekstra@batumiraptorcount.org", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+Description: The Batumi Raptor Count runs highly standarized monitoring of raptor migration in the
+    Batumi bottleneck. This package is used to flag (not remove!) records with possible mistakes.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
+Imports: 
+    data.table,
+    dplyr,
+    readr,
+    readxl,
+    tidyr
