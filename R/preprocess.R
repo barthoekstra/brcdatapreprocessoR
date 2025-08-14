@@ -34,7 +34,7 @@ preprocess_raw_trektellen_data <- function(csv_path, date_str = NULL) {
 
   # Filter for a specific date
   if (!is.null(date_str)) {
-    date_Date <- as.Date(date_str)
+    date_Date <- as.Date(date_str, format = "%Y-%m-%d")
 
     on_date <- data$date == date_Date
     data <- data[on_date, ]
@@ -43,16 +43,31 @@ preprocess_raw_trektellen_data <- function(csv_path, date_str = NULL) {
       stop("Date selection resulted in 0 rows")
     }
 
-    # Add dummy start and end times
-    times <- data.frame(
-      date = rep(as.Date(date_str), 4),
-      timestamp = hms::hms(
+    times_s1 <- extract_count_period(1047, date_str)
+    times_s2 <- extract_count_period(1048, date_str)
+
+    if (!is.null(times_s1) & !is.null(times_s2)) {
+      timestamps <- hms::as_hms(c(
+        times_s1["start"][[1]],
+        times_s2["start"][[1]],
+        times_s1["end"][[1]],
+        times_s2["end"][[1]]
+      ))
+    } else {
+      timestamps <- hms::hms(
         hours = c(0, 0, 23, 23),
         minutes = c(0, 0, 59, 59),
         seconds = c(0, 0, 59, 59)
-      ),
+      )
+    }
+
+    # Add dummy start and end times
+    times <- data.frame(
+      date = rep(date_Date, 4),
+      timestamp = timestamps,
       telpost = c(1047, 1048, 1047, 1048),
       speciesname = c("START", "START", "END", "END"),
+      location = rep("O", 4),
       count = 1
     )
     data <- dplyr::bind_rows(times[1:2, ], data, times[3:4, ])
