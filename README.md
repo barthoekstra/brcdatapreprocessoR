@@ -26,5 +26,5 @@ The following records will be flagged by the preprocessor:
 
 ## Todo
 - [ ] Automate download from Trektellen
-- [ ] Automatically add `START` and `END` records to fetched data based on count start and end times.
+- [x] Automatically add `START` and `END` records to fetched data based on count start and end times.
 - [ ] Implement some basic tests for the flags
