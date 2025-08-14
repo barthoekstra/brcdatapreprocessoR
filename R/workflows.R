@@ -28,5 +28,5 @@ process_day <- function(day_str, tt_file, output_folder) {
   data <- check_trektellen_data(data)
   write_data(data, file.path(output_folder, "inprogress/"))
   write_data(data, file.path(output_folder, "inprogress-backup/"))
-  message(paste0("Finished processing files for", day_str))
+  message(paste0("Finished processing files for ", day_str))
 }
