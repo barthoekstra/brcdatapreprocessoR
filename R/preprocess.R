@@ -157,9 +157,6 @@ check_trektellen_data <- function(data) {
     cur_r <- data[cur_idx, ]
     next_r <- data[next_idx, ]
 
-    print(cur_r)
-    print(next_r)
-
     suspect <- FALSE
 
     # 10-minute window
