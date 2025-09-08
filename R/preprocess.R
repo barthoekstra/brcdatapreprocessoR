@@ -508,7 +508,6 @@ check_trektellen_data <- function(data) {
 #' @param telpost Telpost, either 1047 or 1048
 #'
 #' @returns Data with added BREAK/RESUME records
-#' @export
 add_breakresume <- function(data, date_Date, timestamps, telpost) {
   times_br <- data.frame(
     date = rep(date_Date, length(timestamps)),
