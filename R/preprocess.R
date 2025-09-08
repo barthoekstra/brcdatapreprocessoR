@@ -73,6 +73,14 @@ preprocess_raw_trektellen_data <- function(csv_path, date_str = NULL) {
     data <- dplyr::bind_rows(times[1:2, ], data, times[3:4, ])
   }
 
+  # Add BREAK-RESUME records
+  if (!is.null(times_s1$breakresumes)) {
+    data <- add_breakresume(data, date_Date, times_s1$breakresumes, 1047)
+  }
+  if (!is.null(times_s2$breakresumes)) {
+    data <- add_breakresume(data, date_Date, times_s2$breakresumes, 1048)
+  }
+
   # Change timestamp to 00:00:00 if timestamp was missing
   timestamp_missing <- is.na(data$timestamp)
   data$timestamp[timestamp_missing] <- hms::as_hms(0)
@@ -212,7 +220,7 @@ check_trektellen_data <- function(data) {
   }
 
   # Check if records contain protocol species or protocol codes
-  codes <- c("START", "END", "SHOT")
+  codes <- c("START", "END", "SHOT", "BREAK", "RESUME")
   nonprotocol_species <- !(data$speciesname %in% names(expected_combinations)) &
     !(data$speciesname %in% codes)
   nonprotocol_species_records <- which(nonprotocol_species)
@@ -490,4 +498,26 @@ check_trektellen_data <- function(data) {
   out[!is.na(x)] <- x[!is.na(x)] %in% allowed
   out[is.na(x)] <- allow_na
   out
+}
+
+#' Add BREAK/RESUME records for multi-count days
+#'
+#' @param data Data from trektellen
+#' @param date_Date Date object
+#' @param timestamps hms timestamps for BREAK/RESUME records
+#' @param telpost Telpost, either 1047 or 1048
+#'
+#' @returns Data with added BREAK/RESUME records
+#' @export
+add_breakresume <- function(data, date_Date, timestamps, telpost) {
+  times_br <- data.frame(
+    date = rep(date_Date, length(timestamps)),
+    timestamp = hms::as_hms(unlist(timestamps)),
+    telpost = rep(telpost, length(timestamps)),
+    speciesname = rep(c("BREAK", "RESUME"), length(timestamps) / 2),
+    location = rep("O", length(timestamps)),
+    count = 1
+  )
+  data <- dplyr::bind_rows(data, times_br)
+  return(data)
 }

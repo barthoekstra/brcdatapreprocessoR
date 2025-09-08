@@ -27,7 +27,7 @@ extract_count_period <- function(station, date_str) {
   }
 
   tt_url <- sprintf(
-    "https://trektellen.org/count/view/%d/%s",
+    "https://trektellen.org/count/view/%d/%s?sc=0",
     station_id,
     gsub("-", "", date_str)
   )
@@ -40,23 +40,27 @@ extract_count_period <- function(station, date_str) {
     return(NULL)
   }
   tt_count_text <- rvest::html_text2(tt_count_info)
-  tt_count_period <- strsplit(
-    strsplit(strsplit(tt_count_text, split = "\n")[[1]][1], " ")[[1]][3],
-    split = "-"
-  )
-  tt_count_periods <- strsplit(tt_count_period[[1]], ":")
-  tt_count_start <- as.numeric(tt_count_periods[[1]])
-  tt_count_start <- hms::hms(
-    hours = tt_count_start[[1]],
-    minutes = tt_count_start[[2]],
-    seconds = 0
-  )
-  tt_count_end <- as.numeric(tt_count_periods[[2]])
-  tt_count_end <- hms::hms(
-    hours = tt_count_end[[1]],
-    minutes = tt_count_end[[2]],
-    seconds = 0
-  )
+  tt_count_periods <- strsplit(tt_count_text, split = "\n")[[1]][1]
 
-  return(list(start = tt_count_start, end = tt_count_end))
+  tt_count_periods <- gsub("Counting period: ", "", tt_count_periods)
+  tt_count_periods <- trimws(strsplit(tt_count_periods, split = "&")[[1]])
+
+  if (length(tt_count_periods) == 1) {
+    tt_count_periods <- strsplit(tt_count_periods, "-")[[1]]
+    tt_count_start <- hms::parse_hm(tt_count_periods[[1]])
+    tt_count_end <- hms::parse_hm(tt_count_periods[[2]])
+    tt_breakresumes <- NULL
+  } else {
+    tt_count_periods <- unlist(strsplit(tt_count_periods, "-"))
+    tt_count_start <- hms::parse_hm(tt_count_periods[1])
+    tt_count_end <- hms::parse_hm(tt_count_periods[length(tt_count_periods)])
+    tt_breakresumes <- tt_count_periods[c(2:(length(tt_count_periods) - 1))]
+    tt_breakresumes <- lapply(tt_breakresumes, hms::parse_hm)
+  }
+
+  return(list(
+    start = tt_count_start,
+    end = tt_count_end,
+    breakresumes = tt_breakresumes
+  ))
 }
